@@ -1,5 +1,8 @@
+from django.utils.decorators import method_decorator
+
 from stock.models import Stock
 from product.models import Product
+
 from rest_framework import viewsets, permissions, filters
 
 from .serializers import StockSerializer, ProductSerializer
@@ -9,8 +12,29 @@ from .handle_custom_filters.custom_filters import (
                                 ByQuantityRangeFilterBackend,
                                 ByPriceRangeFilterBackend,
                             )
+from .custom_schemas.stock_schemas import (
+                            stock_list_schema,
+                            stock_retrieve_schema,
+                            stock_create_schema,
+                            stock_update_schema,
+                            stock_partial_update_schema,
+                            stock_destroy_schema
+                         )
+from .custom_schemas.product_schemas import (
+                            product_list_schema,
+                            product_retrieve_schema,
+                            product_create_schema,
+                            product_update_schema,
+                            product_partial_update_schema,
+                            product_destroy_schema
+                         )
 
-
+@method_decorator(name='list', decorator=stock_list_schema)
+@method_decorator(name='retrieve', decorator=stock_retrieve_schema)
+@method_decorator(name='create', decorator=stock_create_schema)
+@method_decorator(name='update', decorator=stock_update_schema)
+@method_decorator(name='partial_update', decorator=stock_partial_update_schema)
+@method_decorator(name='destroy', decorator=stock_destroy_schema)
 class StockViewSet(viewsets.ModelViewSet):
     """
     Esta vista permite **ver, crear, modificar y eliminar Stocks** para el *usuario actual*.
@@ -51,7 +75,12 @@ class StockViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-
+@method_decorator(name='list', decorator=product_list_schema)
+@method_decorator(name='retrieve', decorator=product_retrieve_schema)
+@method_decorator(name='create', decorator=product_create_schema)
+@method_decorator(name='update', decorator=product_update_schema)
+@method_decorator(name='partial_update', decorator=product_partial_update_schema)
+@method_decorator(name='destroy', decorator=product_destroy_schema)
 class ProductViewSet(viewsets.ModelViewSet):
     """
     Esta vista permite **ver, crear, modificar y eliminar Productos** para el *usuario actual*.
