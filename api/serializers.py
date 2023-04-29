@@ -23,13 +23,14 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         fields = super(ProductSerializer, self).get_fields(*args, **kwargs)
         request = self.context.get('request', None)
 
+        # Así solo permite escoger los stocks del usuari actual.
         if request:
             fields['stock'].queryset = Stock.objects.filter(user=request.user)
         return fields
 
 class StockSerializer(serializers.HyperlinkedModelSerializer):
     """
-        Product serializer class
+        Stock serializer class
     """
 
     products = ProductSerializer(many=True, read_only=True)

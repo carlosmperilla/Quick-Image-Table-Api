@@ -3,10 +3,20 @@ from product.models import Product
 from rest_framework import viewsets, permissions, filters
 
 from .serializers import StockSerializer, ProductSerializer
+from .handle_custom_filters.custom_filters import (
+                                ByStockAttrFilterBackend,
+                                ByProductAttrFilterBackend,
+                                ByQuantityRangeFilterBackend,
+                                ByPriceRangeFilterBackend,
+                            )
 
 
 class StockViewSet(viewsets.ModelViewSet):
     """
+    Esta vista permite **ver, crear, modificar y eliminar Stocks** para el *usuario actual*.
+    ## <span style="color:darkslateblue">Filtros</span>
+    Puede usar get-parameters para **filtrar por atributo**, por ejemplo.
+    > api/stocks/?name=stockname
     """
 
     queryset = Stock.objects.all()
@@ -15,6 +25,7 @@ class StockViewSet(viewsets.ModelViewSet):
     filter_backends = [
                        filters.SearchFilter,
                        filters.OrderingFilter,
+                       ByStockAttrFilterBackend,
                        ]
     search_fields = ['name', 'slug']
     ordering_fields = ['name', 'slug']
@@ -43,6 +54,19 @@ class StockViewSet(viewsets.ModelViewSet):
 
 class ProductViewSet(viewsets.ModelViewSet):
     """
+    Esta vista permite **ver, crear, modificar y eliminar Productos** para el *usuario actual*.
+    ## <span style="color:darkslateblue">Filtros</span>
+    
+    Puede usar get-parameters para **filtrar por atributo**, por ejemplo.
+    
+    > api/cards/?name=productname
+    
+    Tambien por **rango**, con *min_quantity* y *max_quantity* o con *min_price* y *max_price*.
+    > api/cards/?min_quantity=12&max_quantity=80
+    
+    > api/cards/?min_price=50.2
+    
+    > api/cards/?max_price=700.45
     """
 
     queryset = Product.objects.all()
@@ -51,6 +75,9 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = [
                     filters.SearchFilter,
                     filters.OrderingFilter,
+                    ByProductAttrFilterBackend,
+                    ByQuantityRangeFilterBackend,
+                    ByPriceRangeFilterBackend,
     ]
     search_fields = ['name', 'slug']
     ordering_fields = ['name', 'slug', 'quantity', 'price']
