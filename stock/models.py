@@ -3,8 +3,6 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
 class Stock(models.Model):
     name = models.CharField(null=False, blank=False, max_length=50, verbose_name="Nombre")
     slug = models.UUIDField(default = uuid.uuid4, unique=True, verbose_name="Nombre unico de stock")
