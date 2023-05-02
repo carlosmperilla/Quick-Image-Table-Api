@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,13 +33,26 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-INSTALLED_APPS = [
+INTERNAL_APPS = [
     'stock.apps.StockConfig',
     'product.apps.ProductConfig',
     'api.apps.ApiConfig',
+    'django.contrib.sites',
+]
+
+EXTERNAL_APPS = [
     'rest_framework',
+	'rest_framework.authtoken',
     'markdown',
     'drf_yasg',
+    'dj_rest_auth',
+    'allauth', 
+    'allauth.account',
+    'dj_rest_auth.registration',
+    'rest_framework_simplejwt',
+]
+
+DEFAULT_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +60,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+INSTALLED_APPS = INTERNAL_APPS + EXTERNAL_APPS + DEFAULT_APPS
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -138,7 +158,24 @@ LOGIN_URL='/login/'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 999999
+    'PAGE_SIZE': 999999,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+		'rest_framework.authentication.TokenAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+	)
+}
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'jwt-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'jwt-auth-refresh',
+    'JWT_AUTH_HTTPONLY': False,
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
 CACHES = {
