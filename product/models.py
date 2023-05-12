@@ -17,7 +17,7 @@ class Product(models.Model):
     quantity = models.IntegerField(default=0, verbose_name="Cantidad", validators=[MinValueValidator(0), MaxValueValidator(9999999999)])
     price = models.DecimalField(default=0.0, max_digits=10, decimal_places=2, verbose_name="Precio", validators=[MinValueValidator(0.0), MaxValueValidator(9999999999)])
     stock = models.ForeignKey('stock.Stock', editable=True, verbose_name='Stock', on_delete=models.CASCADE, related_name="products")
-    image_base64 = models.CharField(null=False, blank=False, max_length=IMAGE_SIZE_LIMIT, verbose_name="Imagen Base64")
+    image_base64 = models.TextField(null=False, blank=False, max_length=IMAGE_SIZE_LIMIT, verbose_name="Imagen Base64")
     
     class Meta:
         verbose_name = "Product"
