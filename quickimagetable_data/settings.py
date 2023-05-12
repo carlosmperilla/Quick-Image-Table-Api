@@ -42,12 +42,14 @@ INTERNAL_APPS = [
 
 EXTERNAL_APPS = [
     'rest_framework',
-	'rest_framework.authtoken',
+    'rest_framework.authtoken',
     'markdown',
     'drf_yasg',
     'dj_rest_auth',
     'allauth', 
     'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid',
     'dj_rest_auth.registration',
     'rest_framework_simplejwt',
 ]
@@ -128,6 +130,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
